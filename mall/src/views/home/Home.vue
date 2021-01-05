@@ -14,7 +14,6 @@
       <GoodsList :goods="showGoods"></GoodsList>
     </Scroll>
 
-
     <BackTop @click.native="backClick" v-show="isShowBackUp"></BackTop>
   
   </div>
