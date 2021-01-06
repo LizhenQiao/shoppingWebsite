@@ -7,6 +7,8 @@
       <DetailShopInfo :shop="shop"></DetailShopInfo>
       <DetailGoodsInfo :detailInfo="detailInfo" @imageLoad="imageLoad"></DetailGoodsInfo>
       <DetailParamInfo :paramInfo="paramInfo"></DetailParamInfo>
+      <DetailCommentInfo :commentInfo="commentInfo"></DetailCommentInfo>
+      <GoodsList :goods="recommends"></GoodsList>
     </Scroll>
   </div>
 </template>
@@ -18,10 +20,14 @@ import DetailBaseInfo from "./childComps/DetailBaseInfo"
 import DetailShopInfo from "./childComps/DetailShopInfo"
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo"
 import DetailParamInfo from "./childComps/DetailParamInfo"
+import DetailCommentInfo from "./childComps/DetailCommentInfo"
+
 
 import Scroll from "components/common/scroll/Scroll"
+import GoodsList from 'components/contents/goods/GoodsList'
 
-import {getDetail, Goods, Shop, GoodsParam} from "network/detail"
+import {getDetail, getRecommend, Goods, Shop, GoodsParam} from "network/detail"
+
 
 export default {
   name: 'Detail',
@@ -32,6 +38,8 @@ export default {
     DetailShopInfo,
     DetailGoodsInfo,
     DetailParamInfo,
+    DetailCommentInfo,
+    GoodsList,
     Scroll
   },
   data(){
@@ -41,7 +49,9 @@ export default {
       goods: {},
       shop: {},
       detailInfo: {},
-      paramInfo: {}
+      paramInfo: {},
+      commentInfo: {},
+      recommends: []
     }
   },
   created() {
@@ -63,8 +73,18 @@ export default {
 
       // 5. 获取参数信息
       this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
+      
+      // 6. 获取评论信息
+      if (data.rate.cRate !== 0){
+        this.commentInfo = data.rate.list[0]
+      }
+    })
+
+    getRecommend().then(res => {
+      this.recommends = res.data.list
     })
   },
+
   methods: {
     imageLoad() {
       this.$refs.scroll.refresh()
