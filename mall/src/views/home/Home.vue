@@ -74,6 +74,7 @@ export default {
   },
 
   deactivated(){
+    // 1. 保存y值
     this.saveY =  this.$refs.scroll.getScrollY()
 
   },

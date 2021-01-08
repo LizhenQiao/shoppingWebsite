@@ -10,7 +10,7 @@
         <img src="~assets/img/tabbar/category_active.svg" slot="icon-active">
         <div slot="text">分类</div> 
       </TabBarItem>
-      <TabBarItem path='/shopcart'>
+      <TabBarItem path='/cart'>
         <img src="~assets/img/tabbar/shopcart.svg" slot="icon">
         <img src="~assets/img/tabbar/shopcart_active.svg" slot="icon-active">
         <div slot="text">购物车</div>

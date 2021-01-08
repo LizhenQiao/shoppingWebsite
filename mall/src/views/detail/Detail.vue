@@ -1,15 +1,17 @@
 <template>
   <div id="detail">
-    <DetailNavBar class="detail-nav"></DetailNavBar>
-    <Scroll class="content" ref="scroll">
+    <DetailNavBar class="detail-nav" @titleClick="titleClick" ref="nav"></DetailNavBar>
+    <Scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
       <DetailSwiper :topImages="topImages"></DetailSwiper>
       <DetailBaseInfo :goods="goods"></DetailBaseInfo>
       <DetailShopInfo :shop="shop"></DetailShopInfo>
       <DetailGoodsInfo :detailInfo="detailInfo" @imageLoad="imageLoad"></DetailGoodsInfo>
-      <DetailParamInfo :paramInfo="paramInfo"></DetailParamInfo>
-      <DetailCommentInfo :commentInfo="commentInfo"></DetailCommentInfo>
-      <GoodsList :goods="recommends"></GoodsList>
+      <DetailParamInfo ref="params" :paramInfo="paramInfo"></DetailParamInfo>
+      <DetailCommentInfo ref="comment" :commentInfo="commentInfo"></DetailCommentInfo>
+      <GoodsList ref="recommend" :goods="recommends"></GoodsList>
     </Scroll>
+    <DetailBottomBar @addCart="addToCart"></DetailBottomBar>
+    <BackTop @click.native="backClick" v-show="isShowBackUp"></BackTop>
   </div>
 </template>
 
@@ -21,10 +23,12 @@ import DetailShopInfo from "./childComps/DetailShopInfo"
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo"
 import DetailParamInfo from "./childComps/DetailParamInfo"
 import DetailCommentInfo from "./childComps/DetailCommentInfo"
+import DetailBottomBar from "./childComps/DetailBottomBar"
 
 
 import Scroll from "components/common/scroll/Scroll"
 import GoodsList from 'components/contents/goods/GoodsList'
+import BackTop from 'components/contents/backtop/BackTop'
 
 import {getDetail, getRecommend, Goods, Shop, GoodsParam} from "network/detail"
 
@@ -39,7 +43,9 @@ export default {
     DetailGoodsInfo,
     DetailParamInfo,
     DetailCommentInfo,
+    DetailBottomBar,
     GoodsList,
+    BackTop,
     Scroll
   },
   data(){
@@ -51,7 +57,10 @@ export default {
       detailInfo: {},
       paramInfo: {},
       commentInfo: {},
-      recommends: []
+      recommends: [],
+      themeTopYs:[0, 0, 0, 0],
+      currentIndex: 0,
+      isShowBackUp: false
     }
   },
   created() {
@@ -84,10 +93,48 @@ export default {
       this.recommends = res.data.list
     })
   },
-
   methods: {
     imageLoad() {
       this.$refs.scroll.refresh()
+      this.themeTopYs[0] = 0
+      this.themeTopYs[1] = this.$refs.params.$el.offsetTop
+      this.themeTopYs[2] = this.$refs.comment.$el.offsetTop
+      this.themeTopYs[3] = this.$refs.recommend.$el.offsetTop
+    },
+    titleClick(index){
+      this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 200)
+    },
+    contentScroll(position) {
+      const positionY = -position.y
+      let length = this.themeTopYs.length
+      for(let i=0; i<length; i++){
+        if (this.currentIndex != i && ((i<length-1 && positionY>this.themeTopYs[i] && positionY <
+        this.themeTopYs[i+1]) || (i === length-1 && positionY > 
+        this.themeTopYs[i]))){
+          this.currentIndex = i
+          this.$refs.nav.currentIndex = this.currentIndex
+        }
+      }
+      if (-position.y > 1000){
+        this.isShowBackUp = true
+      }
+      else {
+        this.isShowBackUp = false
+      }
+    },
+    backClick(){
+      this.$refs.scroll.scrollTo(0, 0, 100)
+    },
+    addToCart(){
+      //获取购物车需要展示的信息
+      const product = {}
+      product.image = this.topImages[0]
+      product.title = this.goods.title
+      product.desc = this.goods.desc
+      product.price = this.goods.realPrice
+      product.iid = this.iid
+
+      this.$store.commit('addCart', product)
     }
   }
 }
