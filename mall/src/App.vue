@@ -1,24 +1,27 @@
 <template>
   <div id="app">
     <keep-alive exclude="Detail">
-      <router-view></router-view>
+      <router-view/>
     </keep-alive>
-    <MainTabBar></MainTabBar>
+    <MainTabbar class="MainTabbar"/>
   </div>
 </template>
 
 <script>
-import MainTabBar from './components/contents/maintabbar/MainTabBar'
+  import MainTabbar from 'components/content/mainTabbar/MainTabBar.vue';
 
-export default {
-  name: 'App',
-  components: {
-    MainTabBar
+  export default {
+    name: 'App',
+    components: {
+      MainTabbar
+    }
   }
-}
 </script>
 
-
 <style>
-  @import '~assets/css/base.css';
+  @import 'assets/css/base.css';
+
+  /* .MainTabbar {
+    z-index: 10;
+  } */
 </style>

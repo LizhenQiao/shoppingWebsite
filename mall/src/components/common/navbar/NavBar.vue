@@ -7,24 +7,26 @@
 </template>
 
 <script>
-export default {
-  name: 'NavBar'
-}
+  export default {
+    name: "NavBar",
+    components:{},
+  };
 </script>
 
-<style>
-  .nav-bar{
+<style scoped>
+  .nav-bar {
     display: flex;
-    line-height: 44px;
     height: 44px;
+    line-height: 44px;
     text-align: center;
+    box-shadow: 0 1px 3px rgba(100, 100, 100, 0.1) ;
   }
-  
-  .left, .right{
+
+  .left, .right {
     width: 60px;
   }
 
-  .center{
+  .center {
     flex: 1;
   }
 </style>

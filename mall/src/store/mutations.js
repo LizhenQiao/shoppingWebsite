@@ -1,17 +1,15 @@
-export default{
-  addCart(state, payload){
-    let oldProduct = null
-    for (let item of state.cartList){
-      if (item.iid === payload.iid){
-        oldProduct = item
-      }
-    }
-    if (oldProduct){
-      oldProduct.count += 1
-    }
-    else{
-      payload.count = 1
-      state.cartList.push(payload)
-    }
+import { ADD_COUNTER, ADD_TO_CART } from "./mutation-types"
+
+export default {
+  // mutations中的每个方法尽可能完成的事件比较单一一点，把判断逻辑放在actions
+  [ADD_COUNTER](state, payload) {
+    payload.count++
+  },
+  [ADD_TO_CART](state, payload) {
+    payload.checked = false
+    state.cartList.push(payload)
+  },
+  checkClick(state, payload) {
+    state.cartList[payload].checked = !state.cartList[payload].checked
   }
 }

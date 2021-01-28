@@ -1,62 +1,55 @@
 <template>
-  <div>
-      <div class="tab-bar-item" @click="itemClick">
-        <div v-if="!isActive">
-          <slot name="icon"></slot>
-        </div>
-        <div v-else>
-          <slot name="icon-active"></slot>
-        </div> 
-        <div :style="activeStyle" class="text">
-          <slot name="text" ></slot>
-        </div>
-      </div>
+  <div class="tab-bar-item" @click="itemClick">
+    <div v-if="!isActive"><slot name="item-icon"></slot></div>
+    <div v-else><slot name="item-icon-active"></slot></div>
+    <!-- 把需要的设置的样式在div里设置，这样就避免插槽被替换时样式被替换掉 -->
+    <div :style="activeStyle"><slot name="item-text"></slot></div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'TabBarItem',
-  computed: {
-    isActive(){
-      return this.$route.path === this.path
-    },
-    activeStyle(){
-      return this.isActive ? {color: this.activeColor} : {}
-    }
-  },
-  props:{
+  props: {
     path: String,
     activeColor: {
       type: String,
-      default: 'darkgreen'
+      default: '#d4237a'
     }
   },
-   
+  data() {
+    return {
+      // isActive: true,
+    }
+  },
+  computed: {
+    isActive() {
+      return this.$route.path.includes(this.path)
+    },
+    activeStyle() {
+      return this.isActive ? {color: this.activeColor} : {}
+    }
+  },
   methods: {
-    itemClick(){
+    itemClick() {
       this.$router.push(this.path)
     }
   }
-}
+};
 </script>
 
-<style>
+<style scoped>
   .tab-bar-item {
+    flex: 1;
     text-align: center;
     height: 49px;
-    font-size: 12px;
+    font-size: 13px;
+    margin-top: 5px;
+    vertical-align: middle;
   }
 
   .tab-bar-item img {
-    margin-top: 5px;
     width: 24px;
     height: 24px;
-    vertical-align: middle;
-    margin-bottom: 1px;
-  }
-
-  .text {
-    font-weight: 900;
   }
 </style>

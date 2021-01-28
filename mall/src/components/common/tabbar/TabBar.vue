@@ -1,21 +1,18 @@
 <template>
-  <div>
-    <div id="tab-bar">
-      <slot></slot>
-    </div>
-  </div>    
+  <div id="tab-bar">
+    <slot></slot>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'TabBar'
-}
+  name: 'TabBar',
+};
 </script>
 
-<style>
+<style scoped>
   #tab-bar {
     display: flex;
-    justify-content: space-around;
     background-color: #f6f6f6;
 
     position: fixed;
@@ -23,8 +20,6 @@ export default {
     right: 0;
     bottom: 0;
 
-    box-shadow: 0, -1px, 2px, rgba(100, 100, 100, 0.05);
+    box-shadow: 0 -1px 3px rgba(100, 100, 100, 0.2);
   }
-
-  
 </style>

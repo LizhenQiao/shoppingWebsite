@@ -1,79 +1,70 @@
 <template>
-  <div>
-    <!-- <h2>分类</h2> -->
-    <div class="wrapper" ref="aaa">
-      <ul class="content">
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      <li>111111111</li>
-      </ul>
-    </div>
+  <div class="category">
+    <NavBar class="nav-bar">
+      <template #center><span>商品分类</span></template>
+    </NavBar>
+    <CategoryContent :sideNavList="sideNavList"
+                     :cateContentList="cateContentList"
+                     @indexChange="indexChange"/>
   </div>
 </template>
 
 <script>
-import BScroll from 'better-scroll'
+  import NavBar from 'components/common/navbar/NavBar.vue'
 
-export default {
-  name: 'Category',
-  data(){
-    return {
-      scroll: null
+  import CategoryContent from './childCompos/CategoryContent.vue'
+  
+  import { getCategory, getSubCategory } from 'network/category'
+
+  export default {
+    name: "Category",
+    components:{
+      NavBar,
+      CategoryContent
+    },
+    data() {
+      return {
+        sideNavList: [],
+        cateContentList: [],
+        maitkey: 3627
+      }
+    },
+    created() {
+      getCategory().then(res => {
+        // console.log(res);
+        this.sideNavList = res.data.category.list
+      }),
+      getSubCategory(this.maitkey).then(res => {
+        // console.log(res);
+        this.cateContentList = res.data.list;
+      })
+    },
+    methods: {
+      indexChange(item) {
+        this.maitkey = item.maitKey
+        // console.log(this.maitkey);
+        getSubCategory(this.maitkey).then(res => {
+          // console.log(res);
+          this.cateContentList = res.data.list;
+        })
+      }
     }
-  },
-  mounted(){
-    this.scroll = new BScroll(this.$refs.aaa, {
-      probeType: 3,
-      pullUpLoad: true
-    })
-
-    this.scroll.on('scroll', (position) => {
-      console.log(position);
-    })
-
-    this.scroll.on('pullingUp', () => {
-      console.log('上拉加载更多');
-    })
-
   }
-}
-
 </script>
 
-<style scoped>
-  .wrapper {
-    height: 150px;
-    background-color: cornflowerblue;
-    overflow: hidden;
+<style lang="less" scoped>
+  .category {
+    height: 100vh;
+    .nav-bar {
+      background-color: var(--color-tint);
+      color: #fff;
+
+    /* 在使用浏览器原生滚动时，为了让导航不跟随一起滚动: */
+    // position: fixed;
+    // left: 0;
+    // right: 0;
+    // top: 0;
+    // z-index: 9;
+    }
   }
 </style>
